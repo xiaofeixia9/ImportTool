@@ -14,10 +14,14 @@ class DealProjectFile(object):
 
         # 获取pods库数组和项目路径
         pods_import = PodsDotHArray.get_pods_h_files(project_path)
-        module_name = PodsPathTool.instance().module_name()
+        is_module, search_path = PodsPathTool.instance().search_path()
 
         # 类文件所在的目录
-        class_path = f"{project_path}/{module_name}/Classes"
+        if is_module:
+            class_path = f"{project_path}/{search_path}/Classes"
+        else:
+            class_path = ''
+
         for root, _, files in os.walk(class_path):
             for file in files:
                 # 过滤除了.h&.m的文件

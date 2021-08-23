@@ -4,7 +4,7 @@ from cocoapodstool import *
 
 
 class PodsPathTool(object):
-    __module_name = ''  # 当前处理的模块名称
+    __search_paths = []  # 当前处理的模块名称
 
     def __init__(self):
         pass
@@ -32,20 +32,19 @@ class PodsPathTool(object):
             # 工程项目包
             pods_path = f"{project_path}/Pods"
             profile_path = project_path
+            directors = [x for x in files if os.path.isdir(os.path.join(project_path, x)) is True]
+            print(directors)
 
             pass
         else:
             podspec_file = [x for x in files if x.find('.podspec') != -1]
             if podspec_file is None or len(podspec_file) == 0:
-                raise ValueError('未找到当前项目的Podfile或者.podspec文件')
+                raise FileNotFoundError('未找到当前项目的Podfile或者.podspec文件')
 
             # 处理模块包
             podspec_array = podspec_file[0].split('.')
 
-            self.__module_name = podspec_array[0]
-
-            if self.__module_name not in files:
-                raise ValueError(f"请选择{self.__module_name}模块的项目")
+            self.__search_paths.append(podspec_array[0])
 
             # 获取pods所有库文件
             pods_path = f"{project_path}/Example/Pods"
@@ -59,5 +58,12 @@ class PodsPathTool(object):
 
         return pods_path
 
-    def module_name(self):
-        return self.__module_name
+    def search_path(self):
+        """
+        返回需要边路的路径
+        :return: 返回一个元祖，第一个参数表示是否是模块，第二个参数表示查找路径
+        """
+        if len(self.__search_paths) > 1:
+            return True, self.__search_paths
+        else:
+            return False, self.__search_paths
