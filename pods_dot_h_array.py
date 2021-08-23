@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+"""
+Created on 2021年08月20日
+@author: hejian
+@contact: 1048891020@qq.com
+"""
 import os
 from pods_path_tool import *
 
@@ -13,7 +20,7 @@ class PodsDotHArray(object):
         # 生成一个{'pod名称'=>['xx.h'...]}这样格式的字典
         pods_dot_h = {}
         for dir_name in files:
-            if dir_name == 'Headers':
+            if dir_name == 'Headers' or dir_name == 'Target Support Files':
                 continue
             dir_path = os.path.join(pods_path, dir_name)
 

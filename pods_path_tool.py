@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+"""
+Created on 2021年08月20日
+@author: hejian
+@contact: 1048891020@qq.com
+"""
 import sys
 
 from cocoapodstool import *
@@ -27,15 +34,17 @@ class PodsPathTool(object):
             print('请选择一个已存在的项目')
             sys.exit()
 
-        podfile = [x for x in files if x.find('Podfile') != -1]
-        if podfile is not None and len(podfile) > 0:
+        if 'Podfile' in files:
             # 工程项目包
             pods_path = f"{project_path}/Pods"
             profile_path = project_path
-            directors = [x for x in files if os.path.isdir(os.path.join(project_path, x)) is True]
-            print(directors)
+            search_directors = []
+            for file in files:
+                if os.path.isdir(os.path.join(project_path, file)) and file.find('.') == -1 and file.find('Pods') == -1:
+                    search_path = f"{project_path}/{file}"
+                    search_directors.append(search_path)
 
-            pass
+            self.__search_paths = search_directors
         else:
             podspec_file = [x for x in files if x.find('.podspec') != -1]
             if podspec_file is None or len(podspec_file) == 0:
@@ -44,7 +53,8 @@ class PodsPathTool(object):
             # 处理模块包
             podspec_array = podspec_file[0].split('.')
 
-            self.__search_paths.append(podspec_array[0])
+            search_path = f"{project_path}/{podspec_array[0]}/Classes"
+            self.__search_paths.append(search_path)
 
             # 获取pods所有库文件
             pods_path = f"{project_path}/Example/Pods"
@@ -61,9 +71,6 @@ class PodsPathTool(object):
     def search_path(self):
         """
         返回需要边路的路径
-        :return: 返回一个元祖，第一个参数表示是否是模块，第二个参数表示查找路径
+        :return: 需要遍历的路径
         """
-        if len(self.__search_paths) > 1:
-            return True, self.__search_paths
-        else:
-            return False, self.__search_paths
+        return self.__search_paths

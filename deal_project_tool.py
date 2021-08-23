@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+"""
+Created on 2021年08月20日
+@author: hejian
+@contact: 1048891020@qq.com
+"""
 import re
 import fileinput
 from pods_dot_h_array import *
@@ -6,23 +13,28 @@ from pods_path_tool import *
 
 class DealProjectFile(object):
 
-    @staticmethod
-    def deal_project(project_path):
+    @classmethod
+    def deal_project(cls, project_path):
         # 预编译正则
         import_dot_hfile = re.compile(r'#import[\s]*["|<][\w\.\+]+\.h["|>]')
         dot_hfile = re.compile(r'[\w]+[\w\.\+]+\.h')
 
         # 获取pods库数组和项目路径
         pods_import = PodsDotHArray.get_pods_h_files(project_path)
-        is_module, search_path = PodsPathTool.instance().search_path()
+        search_paths = PodsPathTool.instance().search_path()
 
-        # 类文件所在的目录
-        if is_module:
-            class_path = f"{project_path}/{search_path}/Classes"
-        else:
-            class_path = ''
+        if search_paths is None:
+            return
 
-        for root, _, files in os.walk(class_path):
+        # 处理文件夹
+        for path in search_paths:
+            DealProjectFile.deal_path(path, import_dot_hfile, dot_hfile, pods_import)
+
+        print('文件处理完成')
+
+    @classmethod
+    def deal_path(cls, path, import_dot_hfile, dot_hfile, pods_import):
+        for root, _, files in os.walk(path):
             for file in files:
                 # 过滤除了.h&.m的文件
                 if not file.endswith('.h') and not file.endswith('.m'):
@@ -30,10 +42,8 @@ class DealProjectFile(object):
 
                 DealProjectFile.deal_file_with_handler(root, file, import_dot_hfile, dot_hfile, pods_import)
 
-        print('文件处理完成')
-
-    @staticmethod
-    def deal_file_with_handler(root, file, import_dot_hfile, dot_hfile, pods_import):
+    @classmethod
+    def deal_file_with_handler(cls, root, file, import_dot_hfile, dot_hfile, pods_import):
         print(f'正在处理：{file}')
 
         path_file_name = os.path.join(root, file)
