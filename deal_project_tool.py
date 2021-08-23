@@ -44,7 +44,7 @@ class DealProjectFile(object):
 
     @classmethod
     def deal_file_with_handler(cls, root, file, import_dot_hfile, dot_hfile, pods_import):
-        print(f'正在处理：{file}')
+        print(f'正在遍历：{file}')
 
         path_file_name = os.path.join(root, file)
         finput = fileinput.input([path_file_name], inplace=True, backup='.bak')
