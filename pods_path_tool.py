@@ -36,8 +36,6 @@ class PodsPathTool(object):
 
         if 'Podfile' in files:
             # 工程项目包
-            pods_path = f"{project_path}/Pods"
-            profile_path = project_path
             search_directors = []
             for file in files:
                 if os.path.isdir(os.path.join(project_path, file)) and file.find('.') == -1 and file.find('Pods') == -1:
@@ -45,6 +43,10 @@ class PodsPathTool(object):
                     search_directors.append(search_path)
 
             self.__search_paths = search_directors
+
+            # 获取pods所有库文件
+            pods_path = f"{project_path}/Pods"
+            profile_path = project_path
         else:
             podspec_file = [x for x in files if x.find('.podspec') != -1]
             if podspec_file is None or len(podspec_file) == 0:
@@ -60,13 +62,17 @@ class PodsPathTool(object):
             pods_path = f"{project_path}/Example/Pods"
             profile_path = f'{project_path}/Example'
 
+        PodsPathTool.update_pods(pods_path, profile_path)
+
+        return pods_path
+
+    @classmethod
+    def update_pods(cls, pods_path, profile_path):
         # 如果没有发现Pods库，执行以下pod update操作
         if not os.path.exists(pods_path):
             pod_update_succeed = CocoaPodsTool.pod_update_with_path(profile_path)
             if not pod_update_succeed:
                 raise ValueError('pod update不成功，请检查一下Podfile是否正确')
-
-        return pods_path
 
     def search_path(self):
         """

@@ -14,5 +14,8 @@ demo：
 
 ![使用步骤](image/tips.png)
 
-## Python配置方法
-简书 [Python](https://www.jianshu.com/p/171d235dfc1b) 查看运行当前项目的配置方式
+## Python环境
+
+Python 版本为3.6及以上环境。
+
+本项目依赖`Anaconda`，可以查看简书 [Python环境配置](https://www.jianshu.com/p/171d235dfc1b) 查看运行当前项目的配置方式
